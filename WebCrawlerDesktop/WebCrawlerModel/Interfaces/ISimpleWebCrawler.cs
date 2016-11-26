@@ -1,7 +1,9 @@
-﻿namespace WebCrawlerModel.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace WebCrawlerModel.Interfaces
 {
-    public interface ISympleCrawlerResult
+    public interface ISimpleWebCrawler
     {
-        
+        Task PerformCrawlingAsync(string url, uint currentDeeplevel);
     }
 }

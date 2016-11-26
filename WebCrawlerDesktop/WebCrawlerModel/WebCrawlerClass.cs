@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Net.Http;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using WebCrawlerModel.Interfaces;
 
 namespace WebCrawlerModel
@@ -50,8 +51,32 @@ namespace WebCrawlerModel
 
                 if (response.IsSuccessStatusCode)
                 {
+                    if (currentDeepLevel <= DeepLevel)
+                    {
+                        var nodeUrls = GetUrls(await response.Content.ReadAsStringAsync());
+                        foreach (var link in nodeUrls)
+                        {
+                            await PerformCrawlingAsync(link, currentDeepLevel + 1);
+                        }
+                    }
                 }
             }
+        }
+
+
+        private IEnumerable<string> GetUrls(string content)
+        {
+            HtmlDocument currentDocument = new HtmlDocument();
+            currentDocument.LoadHtml(content);
+            List<string> nodeUrls = new List<string>();
+
+            foreach (var link in currentDocument.DocumentNode.SelectNodes("//a[@href]"))
+            {
+                var htmlAttribute = link.Attributes["href"];
+                nodeUrls.Add(htmlAttribute.Value);
+            }
+
+            return nodeUrls;
         }
     }
 }
