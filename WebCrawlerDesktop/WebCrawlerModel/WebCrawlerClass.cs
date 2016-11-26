@@ -35,8 +35,10 @@ namespace WebCrawlerModel
         }
 
 
-        public async Task PerformCrawlingAsync(string url, uint currentDeepLevel = 0)
+        public async Task<CrawlerResultType> PerformCrawlingAsync(string url, uint currentDeepLevel = 0)
         {
+            var result = new CrawlerResultType(url);
+
             using (var client = new HttpClient())
             {
                 HttpResponseMessage response;
@@ -46,9 +48,8 @@ namespace WebCrawlerModel
                 }
                 catch (WebException webException)
                 {
-                    return;
+                    return result;
                 }
-
                 if (response.IsSuccessStatusCode)
                 {
                     if (currentDeepLevel <= DeepLevel)
@@ -56,11 +57,12 @@ namespace WebCrawlerModel
                         var nodeUrls = GetUrls(await response.Content.ReadAsStringAsync());
                         foreach (var link in nodeUrls)
                         {
-                            await PerformCrawlingAsync(link, currentDeepLevel + 1);
+                            result.NodeList.Add(await PerformCrawlingAsync(link, currentDeepLevel + 1));
                         }
                     }
                 }
             }
+            return result;
         }
 
 
@@ -75,7 +77,6 @@ namespace WebCrawlerModel
                 var htmlAttribute = link.Attributes["href"];
                 nodeUrls.Add(htmlAttribute.Value);
             }
-
             return nodeUrls;
         }
     }

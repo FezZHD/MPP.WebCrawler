@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WebCrawlerDesktop"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="WebCrawler" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" MinWidth="800" MinHeight="600">
     <Grid>
-        
+        <Button VerticalAlignment="Top" Content="Crawl" HorizontalAlignment="Right" Margin="0, 10, 10, 0" MinHeight="50" MinWidth="100"/>
     </Grid>
 </Window>
