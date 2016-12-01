@@ -5,6 +5,6 @@ namespace WebCrawlerModel.Interfaces
 {
     public interface ISimpleWebCrawler
     {
-        Task<CrawlerResultType> PerformCrawlingAsync(string url, uint currentDeeplevel);
+        Task<CrawlerResultType> PerformCrawlingAsync(string url, uint currentDeeplevel, string fromWhich);
     }
 }

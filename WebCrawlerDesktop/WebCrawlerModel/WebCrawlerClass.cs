@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Net.Http;
+using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
+using AngleSharp.Parser.Html;
 using WebCrawlerModel.Interfaces;
 
 namespace WebCrawlerModel
@@ -35,12 +37,13 @@ namespace WebCrawlerModel
         }
 
 
-        public async Task<CrawlerResultType> PerformCrawlingAsync(string url, uint currentDeepLevel = 0)
+        public async Task<CrawlerResultType> PerformCrawlingAsync(string url, uint currentDeepLevel = 0, string fromWhich = null)
         {
             var result = new CrawlerResultType(url);
-
+            Debug.WriteLine($"{url} with {currentDeepLevel} from {fromWhich}");
             using (var client = new HttpClient())
             {
+                client.Timeout = TimeSpan.FromSeconds(10);
                 HttpResponseMessage response;
                 try
                 {
@@ -50,14 +53,18 @@ namespace WebCrawlerModel
                 {
                     return result;
                 }
+                catch (TaskCanceledException)
+                {
+                    return result;
+                }
                 if (response.IsSuccessStatusCode)
                 {
-                    if (currentDeepLevel <= DeepLevel)
+                    if (currentDeepLevel < DeepLevel)
                     {
                         var nodeUrls = GetUrls(await response.Content.ReadAsStringAsync());
                         foreach (var link in nodeUrls)
                         {
-                            result.NodeList.Add(await PerformCrawlingAsync(link, currentDeepLevel + 1));
+                            result.NodeList.Add(await PerformCrawlingAsync(link, currentDeepLevel + 1, url));
                         }
                     }
                 }
@@ -68,15 +75,15 @@ namespace WebCrawlerModel
 
         private IEnumerable<string> GetUrls(string content)
         {
-            HtmlDocument currentDocument = new HtmlDocument();
-            currentDocument.LoadHtml(content);
-            List<string> nodeUrls = new List<string>();
+            IEnumerable<string> nodeUrls = new List<string>();
 
-            foreach (var link in currentDocument.DocumentNode.SelectNodes("//a[@href]"))
+            var parser = new HtmlParser();
+
+            var document = parser.Parse(content);
+            nodeUrls = document.QuerySelectorAll("a").Select(x => x.GetAttribute("href")).Where((x) =>
             {
-                var htmlAttribute = link.Attributes["href"];
-                nodeUrls.Add(htmlAttribute.Value);
-            }
+                return (!string.IsNullOrEmpty(x)) && (x.StartsWith("http") || x.StartsWith("https"));
+            });
             return nodeUrls;
         }
     }

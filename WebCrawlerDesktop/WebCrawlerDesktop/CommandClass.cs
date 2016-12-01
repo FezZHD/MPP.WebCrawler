@@ -1,18 +1,43 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace WebCrawlerDesktop
 {
-    public class CommandClass:ICommand
+    internal class CommandClass:ICommand
     {
-        public bool CanExecute(object parameter)
+
+        private readonly Func<Task> actionTask;
+
+        private bool isCanExecute = true;
+
+        internal CommandClass(Func<Task> action)
         {
-            throw new NotImplementedException();
+            actionTask = action;
         }
 
-        public void Execute(object parameter)
+
+        public bool CanExecute(object parameter)
         {
-            throw new NotImplementedException();
+            return isCanExecute;
+        }
+
+        public async void Execute(object parameter)
+        {
+            await ExecuteAsync(parameter);
+        }
+
+
+        private Task ExecuteAsync(object paremeter)
+        {
+            return actionTask();
+        }
+
+
+        public void OnCanExecuteChanged(bool status)
+        {
+            isCanExecute = status;
+            CanExecuteChanged?.Invoke(this, new EventArgs());
         }
 
         public event EventHandler CanExecuteChanged;
