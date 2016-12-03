@@ -8,19 +8,44 @@ namespace WebCrawlerDesktop.ViewModel
     internal class ViewModel:BaseViewModel
     {
 
-        private WebCrawlerClass crawlerClass = new WebCrawlerClass(3);
 
         public CommandClass CrawlingCommand { get; }
+        private bool isEnabled = true;
+        public bool IsEnabled
+        {
+            get { return isEnabled; }
+            set
+            {
+                isEnabled = value;
+                OnPropertyChanged();
+            }
+            
+        }
+
+        private bool isProggressBarEnabled = false;
+
+        public bool IsProggressBarEnabled
+        {
+            get { return isProggressBarEnabled; }
+            set
+            {
+                isProggressBarEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private WebCrawlerClass crawlerClass = new WebCrawlerClass(2);
 
         internal ViewModel()
-        { 
+        {
             CrawlingCommand = new CommandClass(async () =>
-            {
-                var watch = new Stopwatch();
-                watch.Start();
+            { 
+                IsEnabled = false;
+                IsProggressBarEnabled = true;
                 var result = await crawlerClass.PerformCrawlingAsync("https://twitter.com");
-                watch.Stop();
-                Debug.WriteLine(watch.Elapsed.Seconds);
+                IsProggressBarEnabled = false;
+                IsEnabled = true;
             });
         }
         

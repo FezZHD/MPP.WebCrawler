@@ -11,6 +11,8 @@
         <viewModel:ViewModel></viewModel:ViewModel>
     </Window.DataContext>
     <Grid>
-        <Button VerticalAlignment="Top" Content="Crawl" HorizontalAlignment="Right" Margin="0, 10, 10, 0" MinHeight="50" MinWidth="100" Command="{Binding CrawlingCommand}"/>
+        <Button VerticalAlignment="Top" Content="Crawl" HorizontalAlignment="Right" Margin="0, 10, 10, 0" MinHeight="50" MinWidth="100" Command="{Binding CrawlingCommand}" IsEnabled="{Binding IsEnabled}"/>
+        <ProgressBar  Width="auto" Height="auto" MinHeight="25" Margin="10, 0, 10, 10" IsIndeterminate="{Binding IsProggressBarEnabled}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"></ProgressBar>
+        <TreeView VerticalAlignment="Stretch"  HorizontalAlignment="Left" Margin="0, 0, 0, 50"></TreeView>
     </Grid>
 </Window>

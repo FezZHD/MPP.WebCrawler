@@ -9,6 +9,7 @@ namespace WebCrawlerDesktop
 
         private readonly Func<Task> actionTask;
 
+
         private bool isCanExecute = true;
 
         internal CommandClass(Func<Task> action)
@@ -24,11 +25,11 @@ namespace WebCrawlerDesktop
 
         public async void Execute(object parameter)
         {
-            await ExecuteAsync(parameter);
+            await ExecuteAsync();
         }
 
 
-        private Task ExecuteAsync(object paremeter)
+        private Task ExecuteAsync()
         {
             return actionTask();
         }
