@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace WebCrawlerDesktop
+namespace WebCrawlerDesktop.Commands
 {
     internal class CommandClass:ICommand
     {

@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Net.Http;
-using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using AngleSharp.Parser.Html;
 using WebCrawlerModel.Interfaces;
+using WebCrawlerModel.Types;
 
 namespace WebCrawlerModel
 {
@@ -31,6 +30,8 @@ namespace WebCrawlerModel
         }
 
 
+        public string ExceptionMessages { get; private set; }
+
         public WebCrawlerClass(uint deepLevel)
         {
             DeepLevel = deepLevel;
@@ -43,18 +44,20 @@ namespace WebCrawlerModel
             Debug.WriteLine($"{url} with {currentDeepLevel} from {fromWhich}");
             using (var client = new HttpClient())
             {
-                client.Timeout = TimeSpan.FromSeconds(10);
+                client.Timeout = TimeSpan.FromSeconds(4);
                 HttpResponseMessage response;
                 try
                 {
                     response = await client.GetAsync(url);
                 }
-                catch (WebException webException)
+                catch (WebException)
                 {
+                    ExceptionMessages += $"Cannot crawl {url}, because there is internet connection problems\n";
                     return result;
                 }
                 catch (TaskCanceledException)
                 {
+                    ExceptionMessages += $"Http timeout for {url}\n";
                     return result;
                 }
                 if (response.IsSuccessStatusCode)
@@ -66,6 +69,12 @@ namespace WebCrawlerModel
                         {
                             result.NodeList.Add(await PerformCrawlingAsync(link, currentDeepLevel + 1, url));
                         }
+                    }
+                }
+                else
+                {
+                    {
+                        ExceptionMessages += $"{response.StatusCode} code answer for {url}\n";
                     }
                 }
             }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WebCrawlerModel
+namespace WebCrawlerModel.Types
 {
     public class CrawlerResultType
     {
