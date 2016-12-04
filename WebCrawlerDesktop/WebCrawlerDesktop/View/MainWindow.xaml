@@ -4,15 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel ="clr-namespace:WebCrawlerDesktop.ViewModel"
+        xmlns:converters ="clr-namespace:WebCrawlerDesktop.Converters"
         xmlns:local="clr-namespace:WebCrawlerDesktop"
         mc:Ignorable="d"
         Title="WebCrawler" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" MinWidth="800" MinHeight="600">
     <Window.DataContext>
         <viewModel:ViewModel></viewModel:ViewModel>
     </Window.DataContext>
+    <Window.Resources>
+        <converters:ResultConverter x:Key="Converter"></converters:ResultConverter>
+    </Window.Resources>
     <Grid>
         <Button VerticalAlignment="Top" Content="Crawl" HorizontalAlignment="Right" Margin="0, 10, 10, 0" MinHeight="50" MinWidth="100" Command="{Binding CrawlingCommand}" IsEnabled="{Binding IsEnabled}"/>
         <ProgressBar  Width="auto" Height="auto" MinHeight="25" Margin="10, 0, 10, 10" IsIndeterminate="{Binding IsProggressBarEnabled}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"></ProgressBar>
-        <TreeView VerticalAlignment="Stretch"  HorizontalAlignment="Left" Margin="0, 0, 0, 50"></TreeView>
+        <TreeView VerticalAlignment="Stretch" ItemsSource="{Binding CrawlerResult, Converter={StaticResource Converter}}" MinWidth="250" HorizontalAlignment="Left" Margin="0, 0, 0, 50"></TreeView>
     </Grid>
 </Window>

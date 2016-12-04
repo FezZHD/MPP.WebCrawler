@@ -22,6 +22,22 @@ namespace WebCrawlerDesktop.ViewModel
             
         }
 
+
+        private CrawlerResultType result;
+
+        public CrawlerResultType CrawlerResult
+        {
+            get { return result; }
+            set
+            {
+                if (value != null)
+                {
+                    result = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private bool isProggressBarEnabled = false;
 
         public bool IsProggressBarEnabled
@@ -35,21 +51,19 @@ namespace WebCrawlerDesktop.ViewModel
         }
 
 
-        private WebCrawlerClass crawlerClass = new WebCrawlerClass(2);
+        
 
         internal ViewModel()
         {
             CrawlingCommand = new CommandClass(async () =>
-            { 
+            {
+                WebCrawlerClass crawlerClass = new WebCrawlerClass(2);
                 IsEnabled = false;
                 IsProggressBarEnabled = true;
-                var result = await crawlerClass.PerformCrawlingAsync("https://twitter.com");
+                CrawlerResult = await crawlerClass.PerformCrawlingAsync("https://twitter.com");
                 IsProggressBarEnabled = false;
                 IsEnabled = true;
             });
-        }
-        
-        
-                
+        }                
     }
 }
