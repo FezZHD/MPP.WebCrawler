@@ -44,7 +44,7 @@ namespace WebCrawlerModel
             Debug.WriteLine($"{url} with {currentDeepLevel} from {fromWhich}");
             using (var client = new HttpClient())
             {
-                client.Timeout = TimeSpan.FromSeconds(4);
+                client.Timeout = TimeSpan.FromSeconds(5);
                 HttpResponseMessage response;
                 try
                 {
@@ -58,6 +58,11 @@ namespace WebCrawlerModel
                 catch (TaskCanceledException)
                 {
                     ExceptionMessages += $"Http timeout for {url}\n";
+                    return result;
+                }
+                catch (HttpRequestException)
+                {
+                    ExceptionMessages += $"Error to send http request for {url}";
                     return result;
                 }
                 if (response.IsSuccessStatusCode)
@@ -74,7 +79,7 @@ namespace WebCrawlerModel
                 else
                 {
                     {
-                        ExceptionMessages += $"{response.StatusCode} code answer for {url}\n";
+                        ExceptionMessages += $"{(int)response.StatusCode} code answer for {url}\n";
                     }
                 }
             }

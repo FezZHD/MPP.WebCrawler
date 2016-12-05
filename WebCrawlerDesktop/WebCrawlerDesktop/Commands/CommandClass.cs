@@ -35,12 +35,6 @@ namespace WebCrawlerDesktop.Commands
         }
 
 
-        public void OnCanExecuteChanged(bool status)
-        {
-            isCanExecute = status;
-            CanExecuteChanged?.Invoke(this, new EventArgs());
-        }
-
         public event EventHandler CanExecuteChanged;
     }
 }
