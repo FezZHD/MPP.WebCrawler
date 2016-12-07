@@ -97,12 +97,13 @@ namespace WebCrawlerDesktop.ViewModel
                     ErrorMessages = "Error casting config value, please, be sure , that deep level value is higher than -1\n";
                     return;
                 }
-                var crawlerClass = new WebCrawlerClass(deepLevel);
+                var logger = new Logger();
+                var crawlerClass = new WebCrawlerClass(deepLevel, logger);
                 IsEnabled = false;
                 IsProggressBarEnabled = true;
                 CrawlerResult = await crawlerClass.PerformCrawlingAsync(loader.ReadUrl());
                 IsProggressBarEnabled = false;
-                ErrorMessages = crawlerClass.ExceptionMessages;
+                ErrorMessages = logger.PrintExceptions(true);
                 IsEnabled = true;
             });
         }

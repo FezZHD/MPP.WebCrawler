@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ILogger.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Types\CrawlerResultType.cs" />
     <Compile Include="WebCrawlerClass.cs" />
     <Compile Include="Interfaces\ISimpleWebCrawler.cs" />

@@ -30,13 +30,14 @@ namespace WebCrawlerModel
         }
 
 
-        public string ExceptionMessages { get; private set; }
-
-        public WebCrawlerClass(uint deepLevel)
+        public WebCrawlerClass(uint deepLevel, Logger logger)
         {
             DeepLevel = deepLevel;
+            crawlerLogger = logger;
         }
 
+
+        private readonly Logger crawlerLogger;
 
         public async Task<CrawlerResultType> PerformCrawlingAsync(string url, uint currentDeepLevel = 0, string fromWhich = null)
         {
@@ -52,17 +53,17 @@ namespace WebCrawlerModel
                 }
                 catch (WebException)
                 {
-                    ExceptionMessages += $"Cannot crawl {url}, because there is internet connection problems\n";
+                    crawlerLogger.AddException(new WebException($"Cannot crawl {url}, because there is internet connection problems"));
                     return result;
                 }
                 catch (TaskCanceledException)
                 {
-                    ExceptionMessages += $"Http timeout for {url}\n";
+                    crawlerLogger.AddException(new WebException($"Http timeout for {url}"));
                     return result;
                 }
                 catch (HttpRequestException)
                 {
-                    ExceptionMessages += $"Error to send http request for {url}";
+                    crawlerLogger.AddException(new HttpRequestException($"Error to send http request for {url}"));
                     return result;
                 }
                 if (response.IsSuccessStatusCode)
@@ -79,7 +80,7 @@ namespace WebCrawlerModel
                 else
                 {
                     {
-                        ExceptionMessages += $"{(int)response.StatusCode} code answer for {url}\n";
+                        crawlerLogger.AddException(new HttpRequestException($"{(int)response.StatusCode} code answer for {url}"));
                     }
                 }
             }
