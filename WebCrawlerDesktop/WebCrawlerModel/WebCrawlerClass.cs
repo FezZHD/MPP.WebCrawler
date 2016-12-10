@@ -39,7 +39,7 @@ namespace WebCrawlerModel
 
         private readonly Logger crawlerLogger;
 
-        public async Task<CrawlerResultType> PerformCrawlingAsync(string url, uint currentDeepLevel = 0, string fromWhich = null)
+        public async Task<CrawlerResultType> PerformCrawlingAsync(string url, uint currentDeepLevel = 0, string fromWhich = "node")
         {
             var result = new CrawlerResultType(url);
             Debug.WriteLine($"{url} with {currentDeepLevel} from {fromWhich}");
@@ -79,9 +79,7 @@ namespace WebCrawlerModel
                 }
                 else
                 {
-                    {
-                        crawlerLogger.AddException(new HttpRequestException($"{(int)response.StatusCode} code answer for {url}"));
-                    }
+                    crawlerLogger.AddException(new HttpRequestException($"{(int)response.StatusCode} code answer for {url}"));
                 }
             }
             return result;
