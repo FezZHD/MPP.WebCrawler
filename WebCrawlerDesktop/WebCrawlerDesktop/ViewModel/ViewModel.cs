@@ -54,14 +54,14 @@ namespace WebCrawlerDesktop.ViewModel
             }
         }
 
-        private bool isProggressBarEnabled = false;
+        private bool isProgressBarEnabled = false;
 
-        public bool IsProggressBarEnabled
+        public bool IsProgressBarEnabled
         {
-            get { return isProggressBarEnabled; }
+            get { return isProgressBarEnabled; }
             set
             {
-                isProggressBarEnabled = value;
+                isProgressBarEnabled = value;
                 OnPropertyChanged();
             }
         }
@@ -71,7 +71,6 @@ namespace WebCrawlerDesktop.ViewModel
         {
             CrawlingCommand = new CommandClass(async () =>
             {
-                CrawlerResult = null;
                 ErrorMessages = String.Empty;
                 ConfigLoader.ConfigLoader loader;
                 uint deepLevel;
@@ -101,9 +100,9 @@ namespace WebCrawlerDesktop.ViewModel
                 var logger = new Logger();
                 var crawlerClass = new WebCrawlerClass(deepLevel, logger);
                 IsEnabled = false;
-                IsProggressBarEnabled = true;
+                IsProgressBarEnabled = true;
                 CrawlerResult = await crawlerClass.PerformCrawlingAsync(loader.ReadUrl());
-                IsProggressBarEnabled = false;
+                IsProgressBarEnabled = false;
                 ErrorMessages = logger.PrintExceptions(true);
                 IsEnabled = true;
             });
