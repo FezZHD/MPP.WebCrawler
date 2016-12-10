@@ -30,6 +30,7 @@ namespace WebCrawlerModel
         }
 
 
+
         public WebCrawlerClass(uint deepLevel, Logger logger)
         {
             DeepLevel = deepLevel;

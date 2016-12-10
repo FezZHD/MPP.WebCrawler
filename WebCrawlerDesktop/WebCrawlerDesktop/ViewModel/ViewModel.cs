@@ -2,6 +2,7 @@
 using System.IO;
 using Newtonsoft.Json;
 using WebCrawlerDesktop.Commands;
+using WebCrawlerDesktop.Model;
 using WebCrawlerModel;
 using WebCrawlerModel.Types;
 
@@ -54,6 +55,9 @@ namespace WebCrawlerDesktop.ViewModel
             }
         }
 
+
+        private string Url { get; set; }
+        private uint DeepLevel { get; set; }
         private bool isProgressBarEnabled = false;
 
         public bool IsProgressBarEnabled
@@ -72,38 +76,22 @@ namespace WebCrawlerDesktop.ViewModel
             CrawlingCommand = new CommandClass(async () =>
             {
                 ErrorMessages = String.Empty;
-                ConfigLoader.ConfigLoader loader;
-                uint deepLevel;
                 try
                 {
-                    loader = ReadConfig();
+                    ReadJson();
                 }
-                catch (JsonReaderException)
+                catch (Exception ex)
                 {
-                    ErrorMessages = "Error to read Json config file\n";
-                    return;
-                }
-                catch (FileNotFoundException)
-                {
-                    ErrorMessages = "Cannot fine config file\n";
-                    return;
-                }
-                try
-                {
-                    deepLevel = loader.ReadDeepLevel();
-                }
-                catch (AggregateException)
-                {
-                    ErrorMessages = "Error casting config value, please, be sure , that deep level value is higher than -1\n";
+                    ErrorMessages = ex.Message;
                     return;
                 }
                 var logger = new Logger();
-                var crawlerClass = new WebCrawlerClass(deepLevel, logger);
+                var model = new ModelClass();
                 IsEnabled = false;
                 IsProgressBarEnabled = true;
-                CrawlerResult = await crawlerClass.PerformCrawlingAsync(loader.ReadUrl());
-                IsProgressBarEnabled = false;
+                CrawlerResult = await model.Crawl(Url, DeepLevel, logger);
                 ErrorMessages = logger.PrintExceptions(true);
+                IsProgressBarEnabled = false;
                 IsEnabled = true;
             });
         }
@@ -114,6 +102,34 @@ namespace WebCrawlerDesktop.ViewModel
             var configReader = new ConfigLoader.ConfigLoader();
             configReader.ReadToken();
             return configReader;
-        }                
+        }
+
+
+
+        private void ReadJson()
+        {
+            ConfigLoader.ConfigLoader loader;
+            try
+            {
+                loader = ReadConfig();
+            }
+            catch (JsonReaderException)
+            {
+                throw new JsonException("Error reading json\n");
+            }
+            catch (FileNotFoundException)
+            {
+                throw new FileNotFoundException("File not found\n");
+            }
+            try
+            {
+                DeepLevel = loader.ReadDeepLevel();
+            }
+            catch (AggregateException)
+            {
+                throw new AggregateException("Error casting config value, please, be sure, that deep level value is higher than - 1\n");
+            }
+            Url = loader.ReadUrl();
+        }             
     }
 }

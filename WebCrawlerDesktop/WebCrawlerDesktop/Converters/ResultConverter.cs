@@ -19,7 +19,7 @@ namespace WebCrawlerDesktop.Converters
             var result = value as CrawlerResultType;
             if (value == null)
             {
-                return null;
+                return new List<TreeViewItem>();
             }
             return new List<TreeViewItem>()
             {

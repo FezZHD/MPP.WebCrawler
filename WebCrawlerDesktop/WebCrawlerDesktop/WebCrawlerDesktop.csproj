@@ -71,6 +71,7 @@
     <Compile Include="Commands\CommandClass.cs" />
     <Compile Include="ConfigLoader\ConfigLoader.cs" />
     <Compile Include="Converters\ResultConverter.cs" />
+    <Compile Include="Model\ModelClass.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\ViewModel.cs" />
     <Compile Include="View\MainWindow.xaml.cs">

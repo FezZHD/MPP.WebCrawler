@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace WebCrawlerModel
 {
@@ -21,13 +22,13 @@ namespace WebCrawlerModel
 
         public string PrintExceptions(bool isMultiString)
         {
-            string returnString = string.Empty;
             var nextStringSymbol = isMultiString ? "\n" : String.Empty;
+            var stringBuilder = new StringBuilder();
             foreach (var exception in exceptionList)
             {
-                returnString += $"{exception.Message}{nextStringSymbol}";
+                stringBuilder.Append($"{exception.Message}{nextStringSymbol}");
             }
-            return returnString;
+            return stringBuilder.ToString();
         }
     }
 }
