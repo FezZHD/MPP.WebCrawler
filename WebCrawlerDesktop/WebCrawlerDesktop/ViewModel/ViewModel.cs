@@ -71,6 +71,7 @@ namespace WebCrawlerDesktop.ViewModel
         {
             CrawlingCommand = new CommandClass(async () =>
             {
+                CrawlerResult = null;
                 ErrorMessages = String.Empty;
                 ConfigLoader.ConfigLoader loader;
                 uint deepLevel;

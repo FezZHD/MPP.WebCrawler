@@ -42,33 +42,34 @@ namespace WebCrawlerModel
         public async Task<CrawlerResultType> PerformCrawlingAsync(string url, uint currentDeepLevel = 0, string fromWhich = "node")
         {
             var result = new CrawlerResultType(url);
-            Debug.WriteLine($"{url} with {currentDeepLevel} from {fromWhich}");
-            using (var client = new HttpClient())
+            if (currentDeepLevel < DeepLevel)
             {
-                client.Timeout = TimeSpan.FromSeconds(5);
-                HttpResponseMessage response;
-                try
+                Debug.WriteLine($"{url} with {currentDeepLevel} from {fromWhich}");
+                using (var client = new HttpClient())
                 {
-                    response = await client.GetAsync(url);
-                }
-                catch (WebException)
-                {
-                    crawlerLogger.AddException(new WebException($"Cannot crawl {url}, because there is internet connection problems"));
-                    return result;
-                }
-                catch (TaskCanceledException)
-                {
-                    crawlerLogger.AddException(new WebException($"Http timeout for {url}"));
-                    return result;
-                }
-                catch (HttpRequestException)
-                {
-                    crawlerLogger.AddException(new HttpRequestException($"Error to send http request for {url}"));
-                    return result;
-                }
-                if (response.IsSuccessStatusCode)
-                {
-                    if (currentDeepLevel < DeepLevel)
+                    client.Timeout = TimeSpan.FromSeconds(5);
+                    HttpResponseMessage response;
+                    try
+                    {
+                        response = await client.GetAsync(url);
+                    }
+                    catch (WebException)
+                    {
+                        crawlerLogger.AddException(
+                            new WebException($"Cannot crawl {url}, because there is internet connection problems"));
+                        return result;
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        crawlerLogger.AddException(new WebException($"Http timeout for {url}"));
+                        return result;
+                    }
+                    catch (HttpRequestException)
+                    {
+                        crawlerLogger.AddException(new HttpRequestException($"Error to send http request for {url}"));
+                        return result;
+                    }
+                    if (response.IsSuccessStatusCode)
                     {
                         var nodeUrls = GetUrls(await response.Content.ReadAsStringAsync());
                         foreach (var link in nodeUrls)
@@ -76,10 +77,11 @@ namespace WebCrawlerModel
                             result.NodeList.Add(await PerformCrawlingAsync(link, currentDeepLevel + 1, url));
                         }
                     }
-                }
-                else
-                {
-                    crawlerLogger.AddException(new HttpRequestException($"{(int)response.StatusCode} code answer for {url}"));
+                    else
+                    {
+                        crawlerLogger.AddException(
+                            new InvalidOperationException($"{(int) response.StatusCode} code answer for {url}"));
+                    }
                 }
             }
             return result;

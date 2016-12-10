@@ -16,7 +16,7 @@
     <Grid>
         <Button VerticalAlignment="Top" Content="Crawl" HorizontalAlignment="Right" Margin="0, 10, 10, 0" MinHeight="50" MinWidth="100" Command="{Binding CrawlingCommand}" IsEnabled="{Binding IsEnabled}"/>
         <ProgressBar  Width="auto" Height="auto" MinHeight="25" Margin="10, 0, 10, 10" IsIndeterminate="{Binding IsProggressBarEnabled}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"></ProgressBar>
-        <TextBox Text="{Binding ErrorMessages}" IsReadOnly="True" Margin="0,70,0,50" MinWidth="150" Width="auto" Height="auto" HorizontalAlignment="Right"/>
-        <TreeView VerticalAlignment="Stretch" ItemsSource="{Binding CrawlerResult, Converter={StaticResource Converter}}" MinWidth="500" HorizontalAlignment="Left" Margin="0, 0, 0, 50"></TreeView>
+        <TextBox Text="{Binding ErrorMessages}" IsReadOnly="True" Margin="0,70,0,50" MinWidth="150" MaxWidth="300" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"/>
+        <TreeView VerticalAlignment="Stretch" ItemsSource="{Binding CrawlerResult, Converter={StaticResource Converter}}" MinWidth="200" MaxWidth="400" HorizontalAlignment="Left" Margin="0, 0, 0, 50"></TreeView>
     </Grid>
 </Window>
