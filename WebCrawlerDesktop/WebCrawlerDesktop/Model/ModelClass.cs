@@ -7,10 +7,23 @@ namespace WebCrawlerDesktop.Model
     internal class ModelClass
     {
 
-        internal async Task<CrawlerResultType> Crawl(string nodeUrl, uint deepLevel, Logger logger)
+        private Logger Log { get; set; }
+
+        internal ModelClass()
         {
-            var crawlerClass = new WebCrawlerClass(deepLevel, logger);
+            Log = new Logger();
+        }
+
+        internal async Task<CrawlerResultType> Crawl(string nodeUrl, uint deepLevel)
+        {
+            var crawlerClass = new WebCrawlerClass(deepLevel, Log);
             return await crawlerClass.PerformCrawlingAsync(nodeUrl);
+        }
+
+
+        internal string BuildLogString()
+        {
+            return Log.PrintExceptions(true);
         }
 
     }

@@ -85,12 +85,11 @@ namespace WebCrawlerDesktop.ViewModel
                     ErrorMessages = ex.Message;
                     return;
                 }
-                var logger = new Logger();
                 var model = new ModelClass();
                 IsEnabled = false;
                 IsProgressBarEnabled = true;
-                CrawlerResult = await model.Crawl(Url, DeepLevel, logger);
-                ErrorMessages = logger.PrintExceptions(true);
+                CrawlerResult = await model.Crawl(Url, DeepLevel);
+                ErrorMessages = model.BuildLogString();
                 IsProgressBarEnabled = false;
                 IsEnabled = true;
             });
